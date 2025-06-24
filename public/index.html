@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Wifski</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+		<style>
+			body {
+				font-family: 'Share Tech Mono', monospace;
+				background-color: #0d0221;
+				background-image:
+					linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+				background-size: 35px 35px;
+				color: #e0e0e0;
+			}
+
+			.cyber-card {
+				background: rgba(10, 2, 30, 0.8);
+				backdrop-filter: blur(5px);
+				-webkit-backdrop-filter: blur(5px);
+				border: 1px solid rgba(0, 255, 255, 0.4);
+				box-shadow:
+					0 0 15px rgba(0, 255, 255, 0.15),
+					inset 0 0 8px rgba(0, 255, 255, 0.1);
+			}
+
+			.cyber-border-b {
+				border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+			}
+
+			/* Slider */
+			.slider-container {
+				position: relative;
+				height: 2rem;
+			}
+			.slider-track {
+				position: absolute;
+				height: 4px;
+				background-color: rgba(0, 255, 255, 0.2);
+				width: 100%;
+				top: 50%;
+				transform: translateY(-50%);
+				border-radius: 2px;
+			}
+			.slider-track-highlight {
+				position: absolute;
+				height: 4px;
+				background-color: #00f0f0;
+				top: 50%;
+				transform: translateY(-50%);
+				border-radius: 2px;
+				box-shadow: 0 0 8px #00f0f0;
+			}
+			input[type='range'].slider {
+				-webkit-appearance: none;
+				appearance: none;
+				position: absolute;
+				width: 100%;
+				height: 4px;
+				top: 50%;
+				transform: translateY(-50%);
+				background: transparent;
+				pointer-events: none;
+				margin: 0;
+			}
+			input[type='range'].slider::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				width: 20px;
+				height: 20px;
+				background-color: #00f0f0;
+				border-radius: 50%;
+				cursor: pointer;
+				pointer-events: auto;
+				box-shadow: 0 0 12px #00f0f0;
+			}
+			input[type='range'].slider::-moz-range-thumb {
+				width: 20px;
+				height: 20px;
+				background-color: #00f0f0;
+				border: none;
+				border-radius: 50%;
+				cursor: pointer;
+				pointer-events: auto;
+				box-shadow: 0 0 12px #00f0f0;
+			}
+
+			.loader {
+				border: 6px solid transparent;
+				border-radius: 50%;
+				width: 80px;
+				height: 80px;
+				animation: spin-colors 2s linear infinite;
+			}
+
+			@keyframes spin-colors {
+				0% {
+					transform: rotate(0deg);
+					border-top-color: #00f0f0;
+					border-right-color: #00f0f0;
+				}
+				25% {
+					border-top-color: #f0f;
+					border-right-color: #f0f;
+				}
+				50% {
+					border-top-color: #ff0;
+					border-right-color: #ff0;
+				}
+				75% {
+					border-top-color: #0f0;
+					border-right-color: #0f0;
+				}
+				100% {
+					transform: rotate(360deg);
+					border-top-color: #00f0f0;
+					border-right-color: #00f0f0;
+				}
+			}
+
+			.cyber-button {
+				position: relative;
+				color: #00f0f0;
+				text-shadow: 0 0 5px #00f0f0;
+				transition: all 0.3s ease;
+				clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+			}
+			.cyber-button:hover {
+				background: rgba(0, 255, 255, 0.1);
+				box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+			}
+			.cyber-button::after {
+				content: '';
+				position: absolute;
+				top: 2px;
+				left: 2px;
+				width: calc(100% - 4px);
+				height: calc(100% - 4px);
+				border: 1px solid rgba(0, 255, 255, 0.7);
+			}
+		</style>
+	</head>
+	<body class="bg-gray-900 text-gray-200">
+		<div class="container mx-auto max-w-3xl p-4 sm:p-6 lg:p-8">
+			<header class="text-center mb-10">
+				<h1
+					class="text-5xl sm:text-6xl font-bold tracking-widest text-cyan-300"
+					style="
+						text-shadow:
+							0 0 10px #00f0f0,
+							0 0 20px #00f0f0;
+					"
+				>
+					Wifski
+				</h1>
+				<p class="text-lg text-cyan-200/80 mt-2">Create high-quality GIFs from your videos on the web.</p>
+			</header>
+
+			<main class="space-y-8">
+				<!-- Step 1: File Upload -->
+				<div class="cyber-card p-6">
+					<h2 class="text-2xl font-semibold mb-4 cyber-border-b pb-3 text-cyan-300">1. SELECT VIDEO</h2>
+					<label
+						for="video-input"
+						class="relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-black/20 hover:bg-black/40 border-cyan-500/50 hover:border-cyan-400 transition-colors"
+					>
+						<div class="text-center">
+							<svg class="mx-auto h-12 w-12 text-cyan-400/70" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+								<path
+									d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+							<p class="mt-1 text-sm text-cyan-300/80"><span class="font-semibold text-cyan-400">UPLOAD FILE</span> OR DRAG AND DROP</p>
+							<p id="file-name" class="mt-1 text-xs text-cyan-500/70"></p>
+						</div>
+						<input id="video-input" type="file" class="sr-only" accept="video/*" />
+					</label>
+					<p class="text-xs text-cyan-400/60 text-center mt-2">MAX FILE SIZE: 100MB</p>
+				</div>
+
+				<form id="conversion-form" class="hidden space-y-8">
+					<!-- Step 2: Trim Video -->
+					<div class="cyber-card p-6">
+						<h2 class="text-2xl font-semibold mb-4 cyber-border-b pb-3 text-cyan-300">2. TRIM VIDEO</h2>
+						<video id="video-preview" class="w-full rounded-lg bg-black mb-4 border border-cyan-800" controls></video>
+
+						<div class="slider-container my-4">
+							<div class="slider-track"></div>
+							<div id="slider-highlight" class="slider-track-highlight"></div>
+							<input type="range" class="slider" id="start-slider" value="0" min="0" step="0.1" />
+							<input type="range" class="slider" id="end-slider" value="100" min="0" step="0.1" />
+						</div>
+
+						<div class="flex justify-between items-center text-sm font-mono text-cyan-300">
+							<span id="start_time_display">00:00:00</span>
+							<span id="end_time_display">00:00:00</span>
+						</div>
+					</div>
+
+					<!-- Step 3: Conversion Options -->
+					<div class="cyber-card p-6">
+						<h2 class="text-2xl font-semibold mb-4 cyber-border-b pb-3 text-cyan-300">3. OPTIONS</h2>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div>
+								<label for="resize" class="block text-sm font-medium text-cyan-200/80">RESIZE</label>
+								<select
+									id="resize"
+									name="resize"
+									class="mt-1 block w-full p-2 border rounded-md bg-gray-900/70 border-cyan-700/50 text-gray-200 focus:ring-cyan-500 focus:border-cyan-500"
+								>
+									<option value="100" selected>100% (Original)</option>
+									<option value="75">75%</option>
+									<option value="50">50%</option>
+									<option value="25">25%</option>
+								</select>
+							</div>
+							<div>
+								<label for="speed" class="block text-sm font-medium text-cyan-200/80">SPEED</label>
+								<select
+									id="speed"
+									name="speed"
+									class="mt-1 block w-full p-2 border rounded-md bg-gray-900/70 border-cyan-700/50 text-gray-200 focus:ring-cyan-500 focus:border-cyan-500"
+								>
+									<option value="1.0" selected>1x</option>
+									<option value="2.0">2x</option>
+									<option value="3.0">3x</option>
+									<option value="4.0">4x</option>
+									<option value="5.0">5x</option>
+								</select>
+							</div>
+							<div>
+								<label for="fps" class="block text-sm font-medium text-cyan-200/80">FPS (3-10)</label>
+								<input
+									type="number"
+									id="fps"
+									name="fps"
+									value="8"
+									min="3"
+									max="10"
+									class="mt-1 block w-full p-2 border rounded-md bg-gray-900/70 border-cyan-700/50 text-gray-200 focus:ring-cyan-500 focus:border-cyan-500"
+								/>
+							</div>
+							<div>
+								<label for="quality" class="block text-sm font-medium text-cyan-200/80">QUALITY (0-100)</label>
+								<input
+									type="number"
+									id="quality"
+									name="quality"
+									value="75"
+									min="0"
+									max="100"
+									class="mt-1 block w-full p-2 border rounded-md bg-gray-900/70 border-cyan-700/50 text-gray-200 focus:ring-cyan-500 focus:border-cyan-500"
+								/>
+							</div>
+							<div class="md:col-span-2">
+								<label for="loop" class="block text-sm font-medium text-cyan-200/80">LOOP</label>
+								<select
+									id="loop"
+									name="loop"
+									class="mt-1 block w-full p-2 border rounded-md bg-gray-900/70 border-cyan-700/50 text-gray-200 focus:ring-cyan-500 focus:border-cyan-500"
+								>
+									<option value="forever" selected>Loop Forever</option>
+									<option value="bounce">Bounce</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<!-- Submit Button -->
+					<div class="text-center">
+						<button type="submit" class="cyber-button w-full sm:w-auto font-bold py-3 px-8 rounded-none">CREATE GIF</button>
+					</div>
+				</form>
+
+				<!-- Step 4: Result -->
+				<div id="result-section" class="hidden text-center cyber-card p-6">
+					<div id="loader" class="hidden flex flex-col items-center justify-center">
+						<div class="loader"></div>
+						<p class="mt-4 text-cyan-300/80">CONVERTING VIDEO...</p>
+					</div>
+					<div id="gif-container" class="hidden">
+						<h2 class="text-2xl font-semibold mb-4 text-cyan-300">GIF READY</h2>
+						<img
+							id="gif-preview"
+							class="w-full max-w-md mx-auto rounded-lg shadow-lg mb-6 border-2 border-cyan-600/50"
+							alt="Converted GIF"
+						/>
+						<a
+							id="download-button"
+							href="#"
+							download="converted.gif"
+							class="cyber-button inline-block bg-green-500/10 border-green-400 text-green-400 font-bold py-3 px-8 rounded-none"
+						>
+							DOWNLOAD
+						</a>
+					</div>
+					<div id="error-container" class="hidden border border-red-500/50 bg-red-900/30 text-red-300 px-4 py-3 rounded-none relative">
+						<strong class="font-bold">CONVERSION FAILED!</strong>
+						<p id="api-error-message" class="block sm:inline mt-2 font-mono text-sm">An error occurred. Check parameters and try again.</p>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<footer class="text-center py-6">
+			<p class="text-sm text-gray-500">
+				Built with 🧡 using
+				<a
+					href="https://developers.cloudflare.com/workers/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-cyan-400 hover:underline hover:text-shadow-[0_0_5px_#00f0f0]"
+					>Cloudflare Workers</a
+				>
+				—
+				<a
+					href="https://github.com/megaconfidence/wifski"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-cyan-400 hover:underline hover:text-shadow-[0_0_5px_#00f0f0]"
+					>👀 the code</a
+				>
+			</p>
+		</footer>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				const videoInput = document.getElementById('video-input');
+				const fileNameDisplay = document.getElementById('file-name');
+				const conversionForm = document.getElementById('conversion-form');
+				const videoPreview = document.getElementById('video-preview');
+
+				const startSlider = document.getElementById('start-slider');
+				const endSlider = document.getElementById('end-slider');
+				const startTimeDisplay = document.getElementById('start_time_display');
+				const endTimeDisplay = document.getElementById('end_time_display');
+				const sliderHighlight = document.getElementById('slider-highlight');
+
+				const resultSection = document.getElementById('result-section');
+				const loader = document.getElementById('loader');
+				const gifContainer = document.getElementById('gif-container');
+				const errorContainer = document.getElementById('error-container');
+				const apiErrorMessage = document.getElementById('api-error-message');
+				const gifPreview = document.getElementById('gif-preview');
+				const downloadButton = document.getElementById('download-button');
+
+				let videoFile = null;
+				const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+
+				videoInput.addEventListener('change', (e) => {
+					if (e.target.files && e.target.files[0]) {
+						const selectedFile = e.target.files[0];
+
+						if (selectedFile.size > MAX_FILE_SIZE) {
+							alert('File is too large. Please select a file under 100MB.');
+							videoInput.value = ''; // Clear the input
+							fileNameDisplay.textContent = '';
+							conversionForm.classList.add('hidden');
+							return;
+						}
+
+						videoFile = selectedFile;
+						fileNameDisplay.textContent = videoFile.name;
+						const fileURL = URL.createObjectURL(videoFile);
+						videoPreview.src = fileURL;
+						conversionForm.classList.remove('hidden');
+						resultSection.classList.add('hidden');
+					}
+				});
+
+				videoPreview.addEventListener('loadedmetadata', () => {
+					const duration = videoPreview.duration;
+					startSlider.max = duration;
+					endSlider.max = duration;
+					startSlider.value = 0;
+					endSlider.value = duration;
+					startTimeDisplay.textContent = formatTimeHHMMSS(0);
+					endTimeDisplay.textContent = formatTimeHHMMSS(duration);
+					updateSliderHighlight();
+				});
+
+				function updateSliderHighlight() {
+					const max = parseFloat(startSlider.max);
+					const start = parseFloat(startSlider.value);
+					const end = parseFloat(endSlider.value);
+
+					sliderHighlight.style.left = `${(start / max) * 100}%`;
+					sliderHighlight.style.width = `${((end - start) / max) * 100}%`;
+				}
+
+				function formatTimeHHMMSS(seconds) {
+					if (isNaN(seconds) || seconds < 0) {
+						return '00:00:00';
+					}
+					return new Date(seconds * 1000).toISOString().substr(11, 8);
+				}
+
+				startSlider.addEventListener('input', () => {
+					if (parseFloat(startSlider.value) >= parseFloat(endSlider.value)) {
+						startSlider.value = parseFloat(endSlider.value) - 0.1;
+					}
+					startTimeDisplay.textContent = formatTimeHHMMSS(startSlider.value);
+					updateSliderHighlight();
+				});
+
+				endSlider.addEventListener('input', () => {
+					if (parseFloat(endSlider.value) <= parseFloat(startSlider.value)) {
+						endSlider.value = parseFloat(startSlider.value) + 0.1;
+					}
+					endTimeDisplay.textContent = formatTimeHHMMSS(endSlider.value);
+					updateSliderHighlight();
+				});
+
+				conversionForm.addEventListener('submit', async (e) => {
+					e.preventDefault();
+					if (!videoFile) {
+						alert('Please select a video file first.');
+						return;
+					}
+
+					resultSection.classList.remove('hidden');
+					loader.classList.remove('hidden');
+					gifContainer.classList.add('hidden');
+					errorContainer.classList.add('hidden');
+
+					resultSection.scrollIntoView({ behavior: 'smooth' });
+
+					const formData = new FormData(conversionForm);
+					formData.append('video', videoFile);
+
+					formData.append('start_time', parseFloat(startSlider.value).toFixed(1));
+					formData.append('end_time', parseFloat(endSlider.value).toFixed(1));
+
+					try {
+						const response = await fetch('/convert', {
+							method: 'POST',
+							body: formData,
+						});
+
+						if (!response.ok) {
+							const errorText = await response.text();
+							throw new Error(errorText || `Server responded with status: ${response.status}`);
+						}
+
+						const blob = await response.blob();
+						const gifUrl = URL.createObjectURL(blob);
+						gifPreview.src = gifUrl;
+						downloadButton.href = gifUrl;
+
+						loader.classList.add('hidden');
+						gifContainer.classList.remove('hidden');
+					} catch (error) {
+						console.error('Conversion failed:', error);
+						apiErrorMessage.textContent = error.message;
+						loader.classList.add('hidden');
+						errorContainer.classList.remove('hidden');
+					} finally {
+						resultSection.scrollIntoView({ behavior: 'smooth' });
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
